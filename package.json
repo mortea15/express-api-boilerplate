@@ -1,33 +1,38 @@
 {
-  "name": "node-jwt",
-  "version": "1.0.0",
-  "description": "Accompanying repository for scotch article on auth with JWTs and node",
+  "name": "express-api-boilerplate",
+  "version": "1.1.0",
+  "description": "Boilerplate for Express APIs, based on [node-jwt](https://github.com/mortea15/node-jwt.git)",
   "main": "index.js",
   "scripts": {
-    "dev": "cross-env NODE_ENV=development nodemon index.js"
+    "dev": "nodemon index.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/emabishi/node-jwt.git"
+    "url": "git+https://github.com/mortea15/express-api-boilerplate.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "mortea15",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/emabishi/node-jwt/issues"
+    "url": "https://github.com/mortea15/express-api-boilerplate/issues"
   },
-  "homepage": "https://github.com/emabishi/node-jwt#readme",
+  "homepage": "https://github.com/mortea15/express-api-boilerplate#readme",
   "dependencies": {
     "bcrypt": "^3.0.1",
     "body-parser": "^1.18.3",
-    "dotenv": "^6.0.0",
+    "eslint": "^5.12.0",
     "express": "^4.16.3",
     "jsonwebtoken": "^8.3.0",
     "mongoose": "^5.2.17"
   },
   "devDependencies": {
+    "eslint": "^5.12.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-node": "^8.0.1",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0",
     "morgan": "^1.9.1",
-    "nodemon": "^1.18.4",
-    "cross-env": "^5.2.0"
+    "nodemon": "^1.18.4"
   }
 }
