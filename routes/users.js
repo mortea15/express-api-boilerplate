@@ -1,5 +1,5 @@
 const controller = require('../controllers/users')
-const validateToken = require('../utils').validateToken
+const validateToken = require('../middleware/tokenValidator')
 
 module.exports = (router) => {
   router.route('/users')
