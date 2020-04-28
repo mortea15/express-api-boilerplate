@@ -14,7 +14,7 @@ module.exports = {
     const email = req.sanitize(req.body.email)
     const password = req.sanitize(req.body.password)
 
-    mongoose.connect(connUri, { useNewUrlParser: true }, (err) => {
+    mongoose.connect(connUri, { useNewUrlParser: true, useUnifiedTopology: true }, (err) => {
       const result = {}
       let status = 201
       if (!err) {
@@ -36,6 +36,7 @@ module.exports = {
             if (msg) { logger.log('error', msg) }
           }
           res.status(status).send(result)
+          mongoose.connection.close()
         })
       } else {
         status = 502
@@ -49,6 +50,7 @@ module.exports = {
         const msg = err.errmsg ? err.errmsg : err.message ? err.message : null
         if (msg) { logger.log('error', msg) }
         res.status(status).send(result)
+        mongoose.connection.close()
       }
     })
   },
@@ -57,7 +59,7 @@ module.exports = {
     const email = req.sanitize(req.body.email)
     const password = req.sanitize(req.body.password)
 
-    mongoose.connect(connUri, { useNewUrlParser: true }, (err) => {
+    mongoose.connect(connUri, { useNewUrlParser: true, useUnifiedTopology: true }, (err) => {
       const result = {}
       let status = 200
       if (!err) {
@@ -84,6 +86,7 @@ module.exports = {
                     result.error = 'Invalid credentials'
                   }
                   res.status(status).send(result)
+                  mongoose.connection.close()
                 }).catch(err => {
                   status = 500
                   result.status = status
@@ -92,6 +95,7 @@ module.exports = {
                   const msg = err.errmsg ? err.errmsg : err.message ? err.message : null
                   if (msg) { logger.log('error', msg) }
                   res.status(status).send(result)
+                  mongoose.connection.close()
                 })
             } else {
               status = 403
@@ -99,6 +103,7 @@ module.exports = {
               result.error = 'The account needs to be activated. Please contact support.'
               logger.log('debug', `Status ${status} for users.login (account inactive)`)
               res.status(status).send(result)
+              mongoose.connection.close()
             }
           } else {
             if (!err) {
@@ -106,6 +111,7 @@ module.exports = {
               result.status = status
               result.error = 'Invalid credentials'
               res.status(status).send(result)
+              mongoose.connection.close()
             } else {
               status = 500
               result.status = status
@@ -114,6 +120,7 @@ module.exports = {
               const msg = err.errmsg ? err.errmsg : err.message ? err.message : null
               if (msg) { logger.log('error', msg) }
               res.status(status).send(result)
+              mongoose.connection.close()
             }
           }
         })
@@ -129,12 +136,13 @@ module.exports = {
         const msg = err.errmsg ? err.errmsg : err.message ? err.message : null
         if (msg) { logger.log('error', msg) }
         res.status(status).send(result)
+        mongoose.connection.close()
       }
     })
   },
 
   getAll: (req, res) => {
-    mongoose.connect(connUri, { useNewUrlParser: true }, (err) => {
+    mongoose.connect(connUri, { useNewUrlParser: true, useUnifiedTopology: true }, (err) => {
       const result = {}
       let status = 200
       if (!err) {
@@ -158,6 +166,7 @@ module.exports = {
               if (msg) { logger.log('error', msg) }
             }
             res.status(status).send(result)
+            mongoose.connection.close()
           })
         } else {
           status = 401
@@ -165,6 +174,7 @@ module.exports = {
           result.error = 'Not authenticated'
           logger.log('error', `Status ${status} for users.getAll (no token found)`)
           res.status(status).send(result)
+          mongoose.connection.close()
         }
       } else {
         status = 500
@@ -178,6 +188,7 @@ module.exports = {
         const msg = err.errmsg ? err.errmsg : err.message ? err.message : null
         if (msg) { logger.log('error', msg) }
         res.status(status).send(result)
+        mongoose.connection.close()
       }
     })
   }
