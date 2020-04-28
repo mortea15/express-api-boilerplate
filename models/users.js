@@ -2,13 +2,13 @@ const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
 
 const environment = process.env.NODE_ENV
-const stage = require('../config')[environment]
-const logger = require('../helpers/logger')
+const stage = require('../config/config')[environment]
+const logger = require('../config/logger')
 
 const Schema = mongoose.Schema
 
 const userSchema = new Schema({
-  email: {
+  username: {
     type: 'String',
     required: true,
     unique: true
