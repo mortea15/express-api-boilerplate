@@ -1,10 +1,11 @@
 {
   "name": "express-api-boilerplate",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "description": "Boilerplate for Express APIs, based on [node-jwt](https://github.com/mortea15/node-jwt.git)",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "scan": "snyk test"
   },
   "repository": {
     "type": "git",
@@ -21,20 +22,24 @@
     "bcrypt": "^3.0.1",
     "body-parser": "^1.18.3",
     "compression": "^1.7.3",
+    "cors": "^2.8.5",
     "express": "^4.16.3",
     "express-sanitizer": "^1.0.4",
     "helmet": "^3.15.0",
+    "ioredis": "^4.16.3",
     "jsonwebtoken": "^8.3.0",
     "mongoose": "^5.2.17",
+    "rate-limiter-flexible": "^2.1.4",
+    "snyk": "^1.313.1",
     "winston": "^3.1.0"
   },
   "devDependencies": {
-    "eslint": "^5.12.0",
-    "eslint-config-standard": "^12.0.0",
-    "eslint-plugin-import": "^2.14.0",
-    "eslint-plugin-node": "^8.0.1",
-    "eslint-plugin-promise": "^4.0.1",
-    "eslint-plugin-standard": "^4.0.0",
+    "eslint": "^6.8.0",
+    "eslint-config-standard": "^14.1.1",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
     "morgan": "^1.9.1",
     "nodemon": "^1.18.4"
   }
