@@ -3,7 +3,6 @@ const bodyParser = require('body-parser')
 const helmet = require('helmet')
 const expressSanitizer = require('express-sanitizer')
 const compression = require('compression')
-const cors = require('cors')
 
 const app = express()
 const router = express.Router()
@@ -30,7 +29,6 @@ app.use(rateLimiter)
 if (environment !== 'production') {
   const morgan = require('morgan')
   app.use(morgan('combined'))
-  app.use(cors)
 }
 
 app.use(`/${API_VERSION}`, routes(router))

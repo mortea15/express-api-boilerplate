@@ -1,6 +1,11 @@
 const { RateLimiterRedis } = require('rate-limiter-flexible')
 const Redis = require('ioredis')
-const redisClient = new Redis({ enableOfflineQueue: false })
+const redisClient = new Redis({
+  host: process.env.REDIS_HOST | '127.0.0.1',
+  port: process.env.REDIS_PORT | '6379',
+  password: process.env.REDIS_PASS | '',
+  enableOfflineQueue: false
+})
 
 const API_VERSION = require('../config/config').API_VERSION
 
