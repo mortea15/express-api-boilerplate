@@ -2,20 +2,22 @@ const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
-const logger = require('../helpers/logger')
-const User = require('../schemas/users')
-const config = require('../config')
+const logger = require('../config/logger')
+const User = require('../models/users')
+const config = require('../config/config')
 const connUri = config.dbString
+
+const ERR_PREFIX = 'An error occurred while'
 
 module.exports = {
   add: (req, res) => {
+    const email = req.sanitize(req.body.email)
+    const password = req.sanitize(req.body.password)
+
     mongoose.connect(connUri, { useNewUrlParser: true }, (err) => {
-      let result = {}
+      const result = {}
       let status = 201
       if (!err) {
-        const email = req.sanitize(req.body.email)
-        const password = req.sanitize(req.body.password)
-
         const user = new User({ email, password })
         user.save((err, user) => {
           if (!err) {
@@ -24,17 +26,29 @@ module.exports = {
           } else {
             status = 500
             result.status = status
-            result.error = err
+            if (process.env.NODE_ENV !== 'production') {
+              result.error = err
+            } else {
+              result.error = `${ERR_PREFIX} creating the user in the DB.`
+            }
             logger.log('error', `Status ${status} for users.add`)
+            const msg = err.errmsg ? err.errmsg : err.message ? err.message : null
+            if (msg) { logger.log('error', msg) }
           }
           res.status(status).send(result)
         })
       } else {
-        status = 500
+        status = 502
         result.status = status
-        result.error = err
-        res.status(status).send(result)
+        if (process.env.NODE_ENV !== 'production') {
+          result.error = err
+        } else {
+          result.error = `${ERR_PREFIX} connecting to the DB.`
+        }
         logger.log('error', `Status ${status} for users.add`)
+        const msg = err.errmsg ? err.errmsg : err.message ? err.message : null
+        if (msg) { logger.log('error', msg) }
+        res.status(status).send(result)
       }
     })
   },
@@ -44,7 +58,7 @@ module.exports = {
     const password = req.sanitize(req.body.password)
 
     mongoose.connect(connUri, { useNewUrlParser: true }, (err) => {
-      let result = {}
+      const result = {}
       let status = 200
       if (!err) {
         User.findOne({ email: email }, (err, user) => {
@@ -67,45 +81,61 @@ module.exports = {
                   } else {
                     status = 401
                     result.status = status
-                    result.error = `Authentication error`
-                    logger.log('error', `Status ${status} for users.login`)
+                    result.error = 'Invalid credentials'
                   }
                   res.status(status).send(result)
                 }).catch(err => {
                   status = 500
                   result.status = status
-                  result.error = 'An error occurred while authenticating the user'
-                  res.status(status).send(result)
+                  result.error = `${ERR_PREFIX} authenticating the user`
                   logger.log('error', `Status ${status} for users.login`)
+                  const msg = err.errmsg ? err.errmsg : err.message ? err.message : null
+                  if (msg) { logger.log('error', msg) }
+                  res.status(status).send(result)
                 })
             } else {
-              status = 401
+              status = 403
               result.status = status
               result.error = 'The account needs to be activated. Please contact support.'
+              logger.log('debug', `Status ${status} for users.login (account inactive)`)
               res.status(status).send(result)
-              logger.log('error', `Status ${status} for users.login`)
             }
           } else {
-            status = 404
-            result.status = status
-            result.error = 'Invalid credentials'
-            res.status(status).send(result)
-            logger.log('error', `Status ${status} for users.login`)
+            if (!err) {
+              status = 401
+              result.status = status
+              result.error = 'Invalid credentials'
+              res.status(status).send(result)
+            } else {
+              status = 500
+              result.status = status
+              result.error = `${ERR_PREFIX} authenticating the user`
+              logger.log('error', `Status ${status} for users.login`)
+              const msg = err.errmsg ? err.errmsg : err.message ? err.message : null
+              if (msg) { logger.log('error', msg) }
+              res.status(status).send(result)
+            }
           }
         })
       } else {
         status = 500
         result.status = status
-        result.error = err
+        if (process.env.NODE_ENV !== 'production') {
+          result.error = err
+        } else {
+          result.error = `${ERR_PREFIX} connecting to the DB.`
+        }
+        logger.log('error', `Status ${status} for users.login (DB error)`)
+        const msg = err.errmsg ? err.errmsg : err.message ? err.message : null
+        if (msg) { logger.log('error', msg) }
         res.status(status).send(result)
-        logger.log('error', `Status ${status} for users.login`)
       }
     })
   },
 
   getAll: (req, res) => {
     mongoose.connect(connUri, { useNewUrlParser: true }, (err) => {
-      let result = {}
+      const result = {}
       let status = 200
       if (!err) {
         const payload = req.decoded
@@ -118,24 +148,36 @@ module.exports = {
             } else {
               status = 500
               result.status = status
-              result.error = err
+              if (process.env.NODE_ENV !== 'production') {
+                result.error = err
+              } else {
+                result.error = `${ERR_PREFIX} fetching the users.`
+              }
               logger.log('error', `Status ${status} for users.getAll`)
+              const msg = err.errmsg ? err.errmsg : err.message ? err.message : null
+              if (msg) { logger.log('error', msg) }
             }
             res.status(status).send(result)
           })
         } else {
           status = 401
           result.status = status
-          result.error = `Authentication error`
+          result.error = 'Not authenticated'
+          logger.log('error', `Status ${status} for users.getAll (no token found)`)
           res.status(status).send(result)
-          logger.log('error', `Status ${status} for users.getAll`)
         }
       } else {
         status = 500
         result.status = status
-        result.error = err
+        if (process.env.NODE_ENV !== 'production') {
+          result.error = err
+        } else {
+          result.error = `${ERR_PREFIX} connecting to the DB.`
+        }
+        logger.log('error', `Status ${status} for users.getAll (DB conn err)`)
+        const msg = err.errmsg ? err.errmsg : err.message ? err.message : null
+        if (msg) { logger.log('error', msg) }
         res.status(status).send(result)
-        logger.log('error', `Status ${status} for users.getAll`)
       }
     })
   }
