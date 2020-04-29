@@ -200,34 +200,43 @@ module.exports = {
       .then(() => {
         const payload = req.decoded
         if (payload) {
-          User.find({}, '-password')
-            .then((users) => {
-              result.status = status
-              result.success = true
-              result.result = users
-              res.status(status).send(result)
-              mongoose.connection.close()
-            })
-            .catch((err) => {
-              status = 500
-              result.status = status
-              result.success = false
-              if (process.env.NODE_ENV !== 'production') {
-                result.error = err
-              } else {
-                result.error = `${ERR_PREFIX} fetching the users.`
-              }
-              logger.log('error', `Status ${status} for users.getAll`)
-              const msg = err.errmsg ? err.errmsg : err.message ? err.message : null
-              if (msg) { logger.log('error', msg) }
-              res.status(status).send(result)
-              mongoose.connection.close()
-            })
+          if (payload.admin) {
+            User.find({}, '-password')
+              .then((users) => {
+                result.status = status
+                result.success = true
+                result.result = users
+                res.status(status).send(result)
+                mongoose.connection.close()
+              })
+              .catch((err) => {
+                status = 500
+                result.status = status
+                result.success = false
+                if (process.env.NODE_ENV !== 'production') {
+                  result.error = err
+                } else {
+                  result.error = `${ERR_PREFIX} fetching the users.`
+                }
+                logger.log('error', `Status ${status} for users.getAll`)
+                const msg = err.errmsg ? err.errmsg : err.message ? err.message : null
+                if (msg) { logger.log('error', msg) }
+                res.status(status).send(result)
+                mongoose.connection.close()
+              })
+          } else {
+            status = 403
+            result.status = status
+            result.success = false
+            result.error = 'Forbidden'
+            res.status(status).send(result)
+            mongoose.connection.close()
+          }
         } else {
           status = 401
           result.status = status
           result.success = false
-          result.error = 'Not authenticated'
+          result.error = 'Unauthorized'
           logger.log('error', `Status ${status} for users.getAll (no token found)`)
           res.status(status).send(result)
           mongoose.connection.close()
