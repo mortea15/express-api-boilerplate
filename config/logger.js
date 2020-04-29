@@ -1,3 +1,4 @@
+'use strict'
 const winston = require('winston')
 
 const logger = winston.createLogger({
@@ -9,10 +10,8 @@ const logger = winston.createLogger({
   ]
 })
 
-if (process.env.NODE_ENV !== 'production') {
-  logger.add(new winston.transports.Console({
-    format: winston.format.simple()
-  }))
-}
+logger.add(new winston.transports.Console({
+  format: winston.format.colorize()
+}))
 
 module.exports = logger
