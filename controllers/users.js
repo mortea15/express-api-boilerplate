@@ -22,7 +22,6 @@ module.exports = {
 
     const validEmail = addrs.parseOneAddress(email)
     const pwTest = checkPassword(password, password2)
-
     if (validEmail && pwTest.success) {
       mongoose.connect(connUri, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true })
         .then(() => {
@@ -32,6 +31,9 @@ module.exports = {
               status = 201
               result.status = status
               result.success = true
+              user = user.toObject()
+              delete user.password
+              delete user.admin
               result.result = user
               res.status(status).send(result)
               mongoose.connection.close()
@@ -115,6 +117,7 @@ module.exports = {
                         result.success = true
                         user = user.toObject()
                         delete user.password
+                        delete user.admin
                         result.result = user
                       } else {
                         status = 401
