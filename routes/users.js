@@ -1,3 +1,4 @@
+'use strict'
 const controller = require('../controllers/users')
 const validateToken = require('../middleware/tokenValidator')
 

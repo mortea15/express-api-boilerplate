@@ -1,3 +1,4 @@
+'use strict'
 const jwt = require('jsonwebtoken')
 const config = require('../config/config')
 const logger = require('../config/logger')
