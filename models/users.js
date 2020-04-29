@@ -1,3 +1,4 @@
+'use strict'
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
 
@@ -8,7 +9,7 @@ const logger = require('../config/logger')
 const Schema = mongoose.Schema
 
 const userSchema = new Schema({
-  username: {
+  email: {
     type: 'String',
     required: true,
     unique: true
