@@ -24,8 +24,14 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json())
 app.use(expressSanitizer())
 app.use(compression())
-app.use(helmet())
-app.use(helmet.frameguard({ action: 'sameorigin' }))
+app.use(helmet({
+  frameguard: {
+    action: 'sameorigin'
+  },
+  referrerPolicy: {
+    policy: 'same-origin'
+  }
+}))
 
 if (environment !== 'production') {
   app.use(morgan('dev'))
