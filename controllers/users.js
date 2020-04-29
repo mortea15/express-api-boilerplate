@@ -7,6 +7,7 @@ const addrs = require('email-addresses')
 const logger = require('../config/logger')
 const User = require('../models/users')
 const config = require('../config/config')
+const checkPassword = require('../utils/passwordCheck')
 const connUri = config.dbString
 
 const ERR_PREFIX = 'An error occurred while'
@@ -17,10 +18,12 @@ module.exports = {
     let status = 200
     const email = req.sanitize(req.body.email)
     const password = req.sanitize(req.body.password)
+    const password2 = req.sanitize(req.body.password2)
 
-    const valid = addrs.parseOneAddress(email)
+    const validEmail = addrs.parseOneAddress(email)
+    const pwTest = checkPassword(password, password2)
 
-    if (valid) {
+    if (validEmail && pwTest.success) {
       mongoose.connect(connUri, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true })
         .then(() => {
           const user = new User({ email, password })
@@ -72,7 +75,13 @@ module.exports = {
       status = 400
       result.status = status
       result.success = false
-      result.error = 'Not a valid email address.'
+      if (!validEmail) {
+        result.error = 'Not a valid email address.'
+      }
+      if (!pwTest.success) {
+        result.error = 'The password does not meet the criteria.'
+        result.criteria = pwTest.errors
+      }
       res.status(status).send(result)
       mongoose.connection.close()
     }
@@ -84,9 +93,9 @@ module.exports = {
     const email = req.sanitize(req.body.email)
     const password = req.sanitize(req.body.password)
 
-    const valid = addrs.parseOneAddress(email)
+    const validEmail = addrs.parseOneAddress(email)
 
-    if (valid) {
+    if (validEmail) {
       mongoose.connect(connUri, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true })
         .then(() => {
           User.findOne({ email: email })
