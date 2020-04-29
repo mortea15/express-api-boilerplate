@@ -1,8 +1,10 @@
+'use strict'
 const express = require('express')
 const bodyParser = require('body-parser')
 const helmet = require('helmet')
 const expressSanitizer = require('express-sanitizer')
 const compression = require('compression')
+const morgan = require('morgan')
 
 const app = express()
 const router = express.Router()
@@ -24,11 +26,12 @@ app.use(expressSanitizer())
 app.use(compression())
 app.use(helmet())
 app.use(helmet.frameguard({ action: 'sameorigin' }))
-app.use(rateLimiter)
 
 if (environment !== 'production') {
-  const morgan = require('morgan')
-  app.use(morgan('combined'))
+  app.use(morgan('dev'))
+} else {
+  app.use(morgan('tiny'))
+  app.use(rateLimiter)
 }
 
 app.use(`/${API_VERSION}`, routes(router))
