@@ -1,6 +1,17 @@
 # express-api-boilerplate
 A hardened boilerplate for a RESTful API built on Express.js
 
+## Features
+- Rate limiting
+- Authentication using JWT (protect specific or all endpoints)
+- Basic logging
+- Basic input sanitization
+- `Helmetjs` for HTTP Headers (with `Referer` and `X-Frame-Options` set to `SAMEORIGIN`)
+- Password check based on requirements by OWASP
+
+## Todo
+- Testing
+
 ## Installation and Basic Usage
 1. Install npm packages
 ```bash
