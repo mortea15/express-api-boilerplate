@@ -1,9 +1,10 @@
+'use strict'
 const { RateLimiterRedis } = require('rate-limiter-flexible')
 const Redis = require('ioredis')
 const redisClient = new Redis({
-  host: process.env.REDIS_HOST | '127.0.0.1',
-  port: process.env.REDIS_PORT | '6379',
-  password: process.env.REDIS_PASS | '',
+  host: process.env.REDIS_HOST || '127.0.0.1',
+  port: process.env.REDIS_PORT || '6379',
+  password: process.env.REDIS_PASS || '',
   enableOfflineQueue: false
 })
 
