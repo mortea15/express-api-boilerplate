@@ -1,6 +1,6 @@
 {
   "name": "express-api-boilerplate",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Boilerplate for Express APIs, based on [node-jwt](https://github.com/mortea15/node-jwt.git)",
   "main": "index.js",
   "scripts": {
@@ -23,6 +23,7 @@
     "body-parser": "^1.18.3",
     "compression": "^1.7.3",
     "cors": "^2.8.5",
+    "email-addresses": "^3.1.0",
     "express": "^4.16.3",
     "express-sanitizer": "^1.0.4",
     "helmet": "^3.15.0",
@@ -31,7 +32,8 @@
     "mongoose": "^5.2.17",
     "rate-limiter-flexible": "^2.1.4",
     "snyk": "^1.313.1",
-    "winston": "^3.1.0"
+    "winston": "^3.1.0",
+    "morgan": "^1.9.1"
   },
   "devDependencies": {
     "eslint": "^6.8.0",
@@ -40,7 +42,6 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
-    "morgan": "^1.9.1",
     "nodemon": "^1.18.4"
   }
 }
